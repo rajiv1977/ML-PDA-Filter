@@ -1,0 +1,117 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                     SML-PDA Filter                                        %
+%                   Copyright @2014_mcmaster, version 01_02242014                           %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                               S.Rajiv,  and T.Kirubarajan                                 %
+%           ECE Dept., McMaster University, Hamilton, Ontario, L8S 4K1, Canada.             %
+%                         sithirr@mcmaster.ca and kiruba@mcmaster.ca                        %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+function plot_target_truth_and_sensor(p,t,s,x,status,tracks)
+MLPDA_parameter;
+%close all ;
+figure ;
+
+if(strcmp(status,'2D'))
+% For all targets
+for i=1 : t.no_of_targets
+    temp_plot = [ ] ;
+    for j=1 : length(s.sensor_no(1).truth(:,1))
+        T = s.sensor_no(1).truth(j,1) ;
+        t_row = find( t.target_no(i).truth(:,1)==T ) ;
+        if ~isempty(t_row)
+            temp_plot = [ temp_plot , [t.target_no(i).truth(t_row,2);t.target_no(i).truth(t_row,4)] ];
+        end
+    end
+    
+    alt1 = ones(1,length(temp_plot))*0;
+    plot( temp_plot(1,:),temp_plot(2,:), 'blue');
+    %plot3( temp_plot(1,:),temp_plot(2,:),alt1, 'blue');
+    hold on
+end
+
+% For all sensors
+for i=1 : s.no_of_sensors
+    temp_plot = [ ];
+    for j=1 : length(s.sensor_no(i).truth(:,1))
+        temp_plot = [ temp_plot , [s.sensor_no(i).truth(j,2);s.sensor_no(i).truth(j,4)] ];
+    end
+    
+    alt2 = ones(1,length(temp_plot))*s.sensor_no(i).alt ;
+    plot(temp_plot(1,:),temp_plot(2,:), 'red');
+    %plot3(temp_plot(1,:),temp_plot(2,:),alt2, 'red');
+    hold on
+end
+
+% x(2) = [];
+% x(3) = [];
+ plot(x(1),x(3),'bo','LineWidth',2,'MarkerEdgeColor','b','MarkerSize',2)
+ legend('Target Position','Sensor Position','Estimated initial target state');
+
+% plot(x(1),x(2),'bo','LineWidth',2,'MarkerEdgeColor','b','MarkerSize',2)
+%legend('Target Position','Sensor Position');
+xlabel('X-Position (m)');
+ylabel('Y-Position (m)');
+end;
+
+if(strcmp(status,'3D'))
+% For all targets
+
+for i=1 : t.no_of_targets
+    temp_plot = [ ] ;
+    for j=1 : length(s.sensor_no(1).truth(:,1))
+        T = s.sensor_no(1).truth(j,1) ;
+        t_row = find( t.target_no(i).truth(:,1)==T ) ;
+        if ~isempty(t_row)
+            temp_plot = [ temp_plot , [t.target_no(i).truth(t_row,2);t.target_no(i).truth(t_row,4)] ];
+        end
+    end
+    
+    alt1 = ones(1,length(temp_plot))*0;
+    %plot( temp_plot(1,:),temp_plot(2,:), 'blue');
+    plot3( temp_plot(1,:),temp_plot(2,:),alt1, 'black');
+    hold on
+end
+
+% For all sensors
+for i=1 : s.no_of_sensors
+    temp_plot = [ ];
+    for j=1 : length(s.sensor_no(i).truth(:,1))
+        temp_plot = [ temp_plot , [s.sensor_no(i).truth(j,2);s.sensor_no(i).truth(j,4)] ];
+    end
+    
+    alt2 = ones(1,length(temp_plot))*s.sensor_no(i).alt;
+    %plot(temp_plot(1,:),temp_plot(2,:), 'red');
+    plot3(temp_plot(1,:),temp_plot(2,:),alt2, 'red');
+    hold on
+end
+
+% For all tracks
+for i=1 : t.no_of_targets
+    temp_plot3 = [ ];
+    for j=1 : length(s.sensor_no(i).truth(:,1))
+        temp_plot3 = [ temp_plot3 , [tracks(j).x(1);tracks(j).x(3)] ];
+    end
+
+    alt2 = ones(1,length(temp_plot3))*0;
+    %plot(temp_plot(1,:),temp_plot(2,:), 'red');
+    plot3(temp_plot3(1,:),temp_plot3(2,:),alt2,'--g','LineWidth',1,...
+                       'MarkerEdgeColor','g',...
+                       'MarkerFaceColor','g',...
+                       'MarkerSize',2);
+    hold on
+end
+
+% x(2) = [];
+% x(3) = [];
+ %plot3(x(1),x(3),0,'bo','LineWidth',2,'MarkerEdgeColor','b','MarkerSize',2)
+ %legend('Target Position','Sensor Position','Estimated target state');
+ legend('Target Position','Sensor Position ','Estimated target state');
+ %legend('Target Position','Sensor Position');
+xlabel('X-Position (m)');
+ylabel('Y-Position (m)');
+zlabel('Z-Position (m)');
+
+
+end
+
+end
